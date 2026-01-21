@@ -1,0 +1,56 @@
+<H1> 여긴 127.0.0.1:8000/polls/aa 경로입니다.</H1>
+<div> Q1 내용 : aa.html 파일을 연동시켜서 화면에 출력</div>
+<div> A1 : 이 내용이 보이면 aa.html 파일 연동 성공</div>
+<br><br>
+<div> Q2 내용 : 데이터를 for문 없이 접근해 출력해보기</div>
+<!--
+A2_1 : question 변수 자체는 장고가 넘겨준 '질문 꾸러미' 객체 그 자체
+A2_2 : question은 질문 리스트(주머니)이지, 질문 하나가 아니기 때문
+tip : {{ question.0.question_text }}처럼 순서를 지정하거나, for문을 돌려 알맹이를 하나씩 꺼내야만 .question_text를 사용할 수 있습니다.
+A2_3 : 장고의 Question 모델이나 QuerySet 객체에는 latest_question_list라는 이름의 기능(속성)이 아예 정의되어 있지 않기 때문
+-->
+<p>A2_1 : {{ question }} </p>
+<!-- <p>A2_2 : {{ question.question_text }} </p>
+<p>A2_2_pix : {{ question.0.question_text }} </p>
+<p>A2_3 : {{ question.latest_question_list }} </p> -->
+
+
+<br><br>
+<div> Q3 : 데이터 꺼내기</div>
+<div> A3 :  
+    {% for test in question %}
+        <p> <strong>원형 데이터 꺼내기</strong> : {{test}}</p>
+        <p> <strong>데이터 아이디 꺼내기</strong> : {{test.id}}</p>
+        <p> <strong>모델 데이터 제목 가져오기</strong> : {{test.question_text}}</p>
+        <p> ---------------------------------------------------- <p><br>
+    {% endfor %}
+</div>
+<br>
+<div> Q4 : Choice 꺼내기</div>
+
+<div> A4 :  
+    <p> {{ choice_list }}</p>
+    {% for test in choice %}
+        <p> <strong>원형 데이터 꺼내기</strong> : {{test}}</p>
+        <p> <strong>데이터 아이디 꺼내기</strong> : {{test.id}}</p>
+        <p> <strong>모델 데이터 제목 가져오기</strong> : {{test.question}}</p>
+        <p> ---------------------------------------------------- <p><br>
+    {% endfor %}
+</div>
+<br>
+<div> Q5 내용 : Choice 내용출력 (역참조) </div>
+<div> A5 :
+    {% for test in question %}
+        <p> {{ test.question_text }}</p>
+        {% if test.choice_set.all %}
+            {% for choice2 in test.choice_set.all %}
+                <a> choice_text : {{ choice2.choice_text }}</a><br>
+                <a> vote : {{ choice2.votes }}</a><br>
+            {% endfor %}
+        {% else %}
+            <p> {{test.question_text}}는 Choice가 없습니다</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+

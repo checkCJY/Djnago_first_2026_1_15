@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title %} Django first {% endblock %} </title>
+    <link rel="stylesheet" href="{% static 'polls/index.css' %}">
+</head>
+<body>
+    {% include "polls/header.html" %}
+
+    <main>
+        {% block content %}
+            <!-- 실제 컨텐츠는 여기에 들어간다. -->
+        {% endblock %}
+    </main>
+
+    {% include "polls/footer.html" %}
+
+</body>
+</html>

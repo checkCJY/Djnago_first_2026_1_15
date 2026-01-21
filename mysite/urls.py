@@ -26,15 +26,4 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     # http://127.0.0.1:8000/admin
-
-
-    # 아래 코드는 메인이 polls.urls 로 설정되어짐.
-    # 2번 경우
-    # path('', include("polls.urls")),
-    # # http://127.0.0.1:8000/
-
-    # # 테스트
-    # path('test/', include("polls.urls")), # 주소명 공백
-    # # http://127.0.0.1:8000/test
-    # # http://127.0.0.1:8000/test/polls, /test/test
 ]

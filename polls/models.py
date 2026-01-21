@@ -7,8 +7,10 @@ class Question(models.Model):
     pub_date = models.DateTimeField("date published")
 
 	# 객체를 문자열로 표현할 때 (관리자 페이지 등에서 유용)
+    # def __str__(self):
+    #     return self.question_text
     def __str__(self):
-        return self.question_text
+        return f"{self.id} - {self.question_text} - {self.pub_date}"
     
     # 테스트코드와 연관
     # 논리적, 정확히 떨어져야 하는 경우에 테스트코드 작성
