@@ -1,8 +1,6 @@
 {% extends "polls/base.html" %}
 {% load static %}
 
-{% block title %}{{ question.question_text }}{% endblock %}
-
 {% block content %}
 <link rel="stylesheet" href="{% static 'polls/detail.css' %}">
 
@@ -14,24 +12,23 @@
 	{% if error_message %}
     <p class="error-message"><strong>{{ error_message }}</strong></p>
 	{% endif %}
-
+        {% with choices=question.choice_set.all %}
             <ul class="choice-list">
-                {% for choice in question.choice_set.all %}
+                {% for choice in choices %}
                 <li>
-                    <label>
-                        <input type="radio" name="choice" value="{{ choice.id }}">
-                        {{ choice.choice_text }}
-                    </label>
+                    <input type="radio" name="choice" id="choice_{{ choice.id }}" value="{{ choice.id }}">  
+                    <label for="choice_{{ choice.id }}">{{ choice.choice_text }}</label>
                 </li>
                 {% empty%}
                     <a> {{question.question_text}} 는 선택된 Choice가 없습니다.</a>
                 {% endfor %}
             </ul>
-        {% if question.choice_set.all %}
-            <div class="submit-btn-wrap">
-                <input type="submit" value="Vote" class="submit-btn">
-            </div>
-        {% endif %}
+                {% if choices %}
+                    <div class="submit-btn-wrap">
+                        <input type="submit" value="Vote" class="submit-btn">
+                    </div>
+                {% endif %}
+        {% endwith %}
     </form>
 </div>
 {% endblock %}

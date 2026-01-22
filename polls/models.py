@@ -10,7 +10,7 @@ class Question(models.Model):
     # def __str__(self):
     #     return self.question_text
     def __str__(self):
-        return f"{self.id} - {self.question_text} - {self.pub_date}"
+        return self.question_text
     
     # 테스트코드와 연관
     # 논리적, 정확히 떨어져야 하는 경우에 테스트코드 작성
@@ -18,7 +18,8 @@ class Question(models.Model):
     def was_published_recently(self):
         from django.utils import timezone
         import datetime
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete = models.CASCADE)

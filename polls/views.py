@@ -1,7 +1,8 @@
+from django.utils import timezone
 from django.db.models import F
 from django.urls import reverse
 from django.views import generic
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect
 
 from django.shortcuts import render, get_object_or_404
 from .models import Question, Choice
@@ -31,7 +32,8 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
-        return Question.objects.order_by("-pub_date")[:5]
+        return Question.objects.filter(pub_date__lte=timezone.now())
+    
 
 '''함수버전 detail'''
 # def detail(request, question_id):
@@ -43,6 +45,10 @@ class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
     context_object_name = "question"
+
+    def get_queryset(self):
+        return Question.objects.filter(pub_date__lte=timezone.now())
+    
 
 '''함수버전 results'''
 # def results(request, question_id):
