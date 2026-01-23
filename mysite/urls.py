@@ -17,10 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-# 아래 변수는 전역변수, 변수명 수정 X
+
 urlpatterns = [
     # 앞에는 도메인, 뒤에는 include로 앱을 호출.
-    # 1번 경우
     path("polls/", include("polls.urls")),
     # http://127.0.0.1:8000/polls
 

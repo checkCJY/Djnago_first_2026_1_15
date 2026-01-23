@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.db.models import F
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect
 
@@ -85,3 +85,25 @@ def vote(request, question_id):
         selected_choice.save()
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
     
+# CRUD - Create
+# 
+
+class QuestionCreateView(generic.CreateView):
+    model = Question
+    fields = ["question_text", "pub_date"]
+    template_name = "polls/question_form.html"
+    success_url = reverse_lazy("polls:index")
+
+class QuestionUpdateView(generic.UpdateView):
+    model = Question
+    fields = ["question_text", "pub_date"]
+    template_name = "polls/question_form.html"
+    def get_success_url(self):
+        # self.object는 지금 수정된 바로 그 Question 객체입니다.
+        return reverse_lazy("polls:detail", kwargs={"pk": self.object.pk})
+
+class QuestionDeleteView(generic.DeleteView):
+    model = Question
+    template_name = "polls/question_confirm_delete.html"
+    # 목록이 삭제되면, 보여줄 상세 페이지가 사라지므로 인덱스로 이동
+    success_url = reverse_lazy("polls:index")
