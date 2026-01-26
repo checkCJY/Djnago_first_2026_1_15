@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # 을 선언하고 
     # polls/urls
     'polls',
+    "accounts", # accounts 앱 추가
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'polls', 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,3 +124,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  
+]
+
+# Django가 accounts 앱을 인식하도록 설정.
+LOGIN_REDIRECT_URL = "polls:index" 
+LOGOUT_REDIRECT_URL = "polls:index"

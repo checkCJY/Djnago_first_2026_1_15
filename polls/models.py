@@ -1,25 +1,31 @@
 from django.db import models
+from django.contrib import admin
 
 
 class Question(models.Model):
 	# 각각 변수에 
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
-
-	# 객체를 문자열로 표현할 때 (관리자 페이지 등에서 유용)
-    # def __str__(self):
-    #     return self.question_text
-    def __str__(self):
-        return self.question_text
     
     # 테스트코드와 연관
     # 논리적, 정확히 떨어져야 하는 경우에 테스트코드 작성
     # 연산, 비교함수 들어가므로
+    @admin.display(
+        boolean=True,
+        ordering="pub_date", 
+        description="Published recently?",
+    )
     def was_published_recently(self):
         from django.utils import timezone
         import datetime
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
+    
+    # 객체를 문자열로 표현할 때 (관리자 페이지 등에서 유용)
+    # def __str__(self):
+    #     return self.question_text
+    def __str__(self):
+        return self.question_text
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete = models.CASCADE)

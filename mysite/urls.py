@@ -25,4 +25,9 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     # http://127.0.0.1:8000/admin
+
+    # 장고에서 지원하는 규칙. 
+    # http://127.0.0.1:8000/accounts/
+    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("django.contrib.auth.urls")), 
 ]
