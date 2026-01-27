@@ -4,10 +4,22 @@ from django.urls import reverse,reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
+import datetime
 
 
 from django.shortcuts import render, get_object_or_404
 from .models import Question, Choice
+
+# 공용 처리 함수
+def _parse_yyyy_mm_dd(value: str):
+    """
+    'YYYY-MM-DD' 형식 문자열을 date로 파싱.
+    실패하면 None 반환.
+    """
+    try:
+        return datetime.date.fromisoformat(value)
+    except (TypeError, ValueError):
+        return None
 
 
 # 페이지가 없는 경우 띄워주기위해 get_object_or_404
@@ -33,8 +45,38 @@ class IndexView(generic.ListView):
     template_name = "polls/index.html"
     context_object_name = "latest_question_list"
 
+    
     def get_queryset(self):
-        return Question.objects.filter(pub_date__lte=timezone.now())
+        qs = Question.objects.all()
+
+        # 1) show=future → 미래 질문 포함 여부 (기본: 미래 숨김)
+        show = self.request.GET.get("show")
+        if show != "future":
+            qs = qs.filter(pub_date__lte=timezone.now())
+
+        # 2) q=키워드 → question_text 검색
+        q = (self.request.GET.get("q") or "").strip()
+        if q:
+            qs = qs.filter(question_text__icontains=q)
+
+        # 3) start/end=YYYY-MM-DD → 기간 필터
+        start = _parse_yyyy_mm_dd(self.request.GET.get("start"))
+        end = _parse_yyyy_mm_dd(self.request.GET.get("end"))
+
+        if start:
+            qs = qs.filter(pub_date__date__gte=start)
+        if end:
+            qs = qs.filter(pub_date__date__lte=end)
+
+        # 4) order=oldest → 정렬 (기본: 최신순)
+        order = self.request.GET.get("order")
+        if order == "oldest":
+            qs = qs.order_by("pub_date")
+        else:
+            qs = qs.order_by("-pub_date")
+
+        # 5) (옵션) 목록 5개 제한 유지
+        return qs[:5]
     
 
 '''함수버전 detail'''

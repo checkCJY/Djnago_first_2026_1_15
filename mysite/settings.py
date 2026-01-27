@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',    # polls/urls
     "accounts", # accounts 앱 추가
+    'django_dbml',    # dbml 만들어서 보기
 ]
 
 MIDDLEWARE = [

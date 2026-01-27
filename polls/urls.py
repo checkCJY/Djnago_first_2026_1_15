@@ -22,6 +22,8 @@ urlpatterns = [
 
     # CBV
     path("", views.IndexView.as_view(), name="index"),
+
+    
     path("<int:pk>/", views.DetailView.as_view(), name="detail"),
     path("<int:pk>/results/", views.ResultsView.as_view(), name="results"),
     path("<int:question_id>/vote/", views.vote, name="vote"),
@@ -71,6 +73,15 @@ urlpatterns = [
     path('practice-1/', practice_views.practice_1, name='practice_1'),
     path('practice-api-1/', practice_views.practice_api_1, name='practice_api_1'),
     
+    # 장고에서 설정해준 주소 포트
+    # http://127.0.0.1:8000/
+
+    # mysite/urls.py
+    # http://127.0.0.1:8000/polls
+
+    # polls/urls.py
+    # http://127.0.0.1:8000/polls/practice-api-1/
+    
     # 연습 2
     path('practice-2/', practice_views.practice_2, name='practice_2'),
     path('practice-api-2/', practice_views.practice_api_2, name='practice_api_2'),
@@ -87,4 +98,6 @@ urlpatterns = [
     path('practice-6/', practice_views.practice_6, name='practice_6'),
     path('practice-api-6/', practice_views.practice_api_6, name='practice_api_6'),
 
+
+    # http:127.0.0.1:8000/polls/
 ]

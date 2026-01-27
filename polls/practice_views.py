@@ -34,6 +34,9 @@ def practice_api_1(request):
     q = request.GET.get("q")        # TODO : q 값을 꺼내기
     return JsonResponse({"q": q})
 
+
+
+
 # 2️⃣ 연습 2: 검색어가 있을 때만 필터하기
 
 # ✅ 학생 목표
