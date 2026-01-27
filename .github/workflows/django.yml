@@ -1,5 +1,7 @@
+# CI 테스트 워크플로우
 name: Django CI
 
+# main, develop 브랜치에 푸시할 때 실행
 on:
   push:
     branches: [ "main" ]
@@ -7,16 +9,19 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     services:
       postgres:
+        # 테스트 환경용 PostgreSQL 컨테이너
+        # 프로덕션 DB와는 별개로 테스트 종료 후 삭제됨
         image: postgres:16
         env:
+          # 컨테이너 초기화 시 사용할 환경 변수
           POSTGRES_DB: django_first2_db
           POSTGRES_USER: django_user
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: postgres # 격리된 테스트 환경이므로 간단한 비밀번호 사용
         ports:
           - 5432:5432
         options: >-
@@ -25,7 +30,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
     strategy:
-      fail-fast: false
+      fail-fast: false  # 한 버전 실패해도 다른 버전 계속 테스트
       matrix:
         python-version: ["3.12"]
 
@@ -37,12 +42,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          cache: "pip"  # pip 캐시로 설치 속도 향상
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+          pip install coverage  # 커버리지 도구 추가
 
       - name: Run migrations and tests
         env:
@@ -50,8 +56,11 @@ jobs:
           POSTGRES_DB: django_first2_db
           POSTGRES_USER: django_user
           POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_HOST: 127.0.0.1  # GitHub Actions 러너의 localhost
           POSTGRES_PORT: 5432
         run: |
           python manage.py migrate
           python manage.py test
+          coverage run --source='.' manage.py test
+          coverage report
+          coverage html
