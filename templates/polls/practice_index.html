@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django 쿼리스트링 연습</title>
+    <link rel="stylesheet" href="{% static 'polls/css/practice.css' %}" />
+    
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Django 쿼리스트링 연습</h1>
+        <p class="subtitle">각 링크를 클릭하여 쿼리스트링의 동작을 확인해보세요!</p>
+        
+        <div class="info-box">
+            <strong>📌 사용법</strong>
+            <p>각 링크는 이미 쿼리스트링이 포함되어 있습니다. 클릭하면 해당 페이지로 이동하며, URL의 쿼리 파라미터를 변경해서 다양하게 테스트해볼 수 있습니다.</p>
+        </div>
+        
+        {% for category in url_list %}
+        <div class="category-section">
+            <h2 class="category-title">{{ category.category }}</h2>
+            
+            {% for item in category.items %}
+            <div class="url-card">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+                <a href="{{ item.url }}" class="url-link" target="_blank">{{ item.url }}</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        
+        <div class="tip">
+            <strong>💡 학습 팁</strong>
+            <ul>
+                <li>각 링크를 클릭한 후, 브라우저 주소창에서 직접 쿼리스트링을 수정해보세요</li>
+                <li>예: <code>?q=hello</code>를 <code>?q=world</code>로 바꿔보기</li>
+                <li>API 버전은 JSON 형태로 응답하므로 데이터 구조를 확인하기 좋습니다</li>
+                <li>파라미터를 아예 제거하거나, 여러 개를 조합해보는 것도 좋은 연습입니다</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -16,6 +16,11 @@
         </div>
     </li>
     {% endfor %}
+    <li>
+        <div class="question-text">
+            <a href="{% url 'polls:practice_index' %}"> 쿼리스트링 연습하러 가기</a>
+        </div>
+    </li>
 </ul>
 {% else %}
 <p>No polls are available.</p>
