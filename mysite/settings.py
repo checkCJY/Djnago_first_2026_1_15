@@ -42,7 +42,7 @@ DEBUG = os.environ.get("DEBUG", "0") == "1"
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'djnago-first-2026-1-15.onrender.com/',  # Render 도메인 허용
+    'djnago-first-2026-1-15.onrender.com',  # Render 도메인 허용
 ]
 
 CSRF_TRUSTED_ORIGINS = [
