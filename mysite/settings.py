@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import dj_database_url  # 이 줄 추가!
+
 
 
 load_dotenv()
@@ -26,13 +28,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # 장고 키 재생성 및 숨김처리
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or "ci-dev-secret-key"
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or "ci-dev-secret-key"
+# DEBUG = True
+SECRET_KEY = (
+    os.environ.get("DJANGO_SECRET_KEY")
+    or os.environ.get("SECRET_KEY")
+    or "ci-dev-secret-key"
+    )
+DEBUG = os.environ.get("DEBUG", "0") == "1"
 
-ALLOWED_HOSTS = []
-
+# 변경, 배포를 위해서
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.onrender.com',  # Render 도메인 허용
+]
 
 # Application definition
 
@@ -50,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 이 줄 추가!
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,15 +99,27 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# 기존코드
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.environ.get("POSTGRES_DB", "django_first2_db"),
+#         "USER": os.environ.get("POSTGRES_USER", "django_user"),
+#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "strong-password"),
+#         "HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
+#         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+#     }
+# }
+# Render 세팅
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "django_first2_db"),
-        "USER": os.environ.get("POSTGRES_USER", "django_user"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "strong-password"),
-        "HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-    }
+    "default": dj_database_url.config(
+        default=f"postgresql://{os.environ.get('POSTGRES_USER', 'django_user')}:"
+                f"{os.environ.get('POSTGRES_PASSWORD', 'strong-password')}@"
+                f"{os.environ.get('POSTGRES_HOST', '127.0.0.1')}:"
+                f"{os.environ.get('POSTGRES_PORT', '5432')}/"
+                f"{os.environ.get('POSTGRES_DB', 'django_first2_db')}",
+        conn_max_age=600,
+    )
 }
 
 
@@ -138,6 +162,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",  
 ]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"  # 이 줄 추가!
+
+# WhiteNoise 설정 (선택사항, 하지만 추천)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Django가 accounts 앱을 인식하도록 설정.
 LOGIN_REDIRECT_URL = "polls:index" 
