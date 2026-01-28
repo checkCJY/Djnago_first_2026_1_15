@@ -5,9 +5,13 @@ build/
 dist/
 wheels/
 *.egg-info
+staticfiles/
+
 
 # Virtual environments
 .venv
 
 # Environment variables
-.env
+.envhtmlcov/
+.coverage
+*.coverage
